@@ -52,13 +52,17 @@ final class ResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate, URL
             startDataRequest(with: url)
         }
 
+        lock.lock()
         pendingRequests.insert(loadingRequest)
+        lock.unlock()
         processPendingRequests()
         return true
     }
 
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader, didCancel loadingRequest: AVAssetResourceLoadingRequest) {
+        lock.lock()
         pendingRequests.remove(loadingRequest)
+        lock.unlock()
     }
 
     // MARK: URLSessionDelegate
